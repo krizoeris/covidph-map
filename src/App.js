@@ -24,7 +24,7 @@ function App() {
   })
 
   const getCases = async () => {
-    let response = await fetch(process.env.REACT_APP_CASES_URL+'/cases')
+    let response = await fetch('https://covidph-api.herokuapp.com/cases')
     response = await response.json()
 
     setState({
