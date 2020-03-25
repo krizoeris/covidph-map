@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import L from 'leaflet';
-import { Map, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet'
 import Card from './components/Card'
 import './App.css'
+import L from 'leaflet';
+import { Map, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet'
 
 let myIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon-2x.png',
@@ -10,7 +10,6 @@ let myIcon = L.icon({
   iconAnchor: [12.5, 41],
   popupAnchor: [0, -41]
 });
-
 
 function App() {
   const [state, setState] = useState({
@@ -27,6 +26,25 @@ function App() {
     hasLocation: false,
     zoom: 3,
   })
+
+  const getCases = async () => {
+    let response = await fetch(process.env.REACT_APP_CASES_URL+'/cases')
+    response = await response.json()
+
+    setState({
+      ...state,
+      cases: {
+        confirmed: response.confirmed,
+        death: response.death,
+        recovered: response.recovered,
+        data: response.data
+      },
+    })
+  }
+
+  useEffect(() => {
+    getCases()
+  }, [])
 
   const position = [state.location.lat, state.location.lng]
   return (
