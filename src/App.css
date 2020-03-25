@@ -18,6 +18,15 @@ body {
     margin-right: 5vh;
 }
 
+.map-menu {
+    z-index: 999;
+    position: absolute;
+    top: 2vh;
+    left: 2vh;
+    font-size: large;
+    padding: 6px 12px;
+}
+
 .leaflet-control-zoom-in, .leaflet-control-zoom-out {
     background-color: #2a4365 !important;
     border-color: #2a4365 !important;
@@ -34,4 +43,12 @@ body {
     margin: 0 !important;
     font-weight: 700 !important;
     font-size: large !important;
+}
+
+.close-card {
+    position: absolute;
+    top: 20px;
+    right: 17px;
+    padding: 3px 7px;
+    font-size: x-small;
 }

@@ -17,6 +17,7 @@ function App() {
       lng: 120.8,
     },
     hasLocation: false,
+    cardShow: false,
     zoom: 10,
   })
 
@@ -33,6 +34,21 @@ function App() {
         data: response.data
       },
       hasLocation: true
+
+    })
+  }
+
+  const handleCardClose = () => {
+    setState({
+      ...state,
+      cardShow: false
+    })
+  }
+
+  const handleCardOpen = () => {
+    setState({
+      ...state,
+      cardShow: true
     })
   }
 
@@ -63,13 +79,20 @@ function App() {
           ))
         }
       </Map>
-      
-      <Card 
-        cases={state.cases.data} 
-        confirmed={state.cases.confirmed} 
-        recovered={state.cases.recovered} 
-        death={state.cases.death}
-      />
+      {state.cardShow &&
+        <Card 
+          cases={state.cases.data} 
+          confirmed={state.cases.confirmed} 
+          recovered={state.cases.recovered} 
+          death={state.cases.death}
+          handleCardClose={handleCardClose}
+        />
+      }
+      {!state.cardShow &&
+        <button className="map-menu rounded-full bg-blue-800 hover:bg-blue-700 font-bold text-gray-300 shadow" onClick={handleCardOpen}>
+          <i class="fas fa-bars"></i>
+        </button>
+      }
     </div>
   );
 }
