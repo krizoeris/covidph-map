@@ -2,14 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from './components/Card'
 import './App.css'
 import L from 'leaflet';
-import { Map, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet'
-
-let myIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon-2x.png',
-  iconSize: [25, 41],
-  iconAnchor: [12.5, 41],
-  popupAnchor: [0, -41]
-});
+import { Map, TileLayer, Circle, Popup, ZoomControl } from 'react-leaflet'
 
 function App() {
   const [state, setState] = useState({
@@ -20,11 +13,11 @@ function App() {
       data: []
     },
     location: {
-      lat: 20,
-      lng: 60,
+      lat: 14.5,
+      lng: 120.8,
     },
     hasLocation: false,
-    zoom: 3,
+    zoom: 10,
   })
 
   const getCases = async () => {
@@ -39,6 +32,7 @@ function App() {
         recovered: response.recovered,
         data: response.data
       },
+      hasLocation: true
     })
   }
 
@@ -46,9 +40,9 @@ function App() {
     getCases()
   }, [])
 
+  const cases = state.cases.data
   const position = [state.location.lat, state.location.lng]
   return (
-    
     <div className="App">
       <Map className="map" center={position} zoom={state.zoom} zoomControl={false}>
         <TileLayer
@@ -57,11 +51,16 @@ function App() {
         />
         <ZoomControl position="topright"/>
         {state.hasLocation &&
-          <Marker position={position} icon={myIcon}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
+          cases.map(cases => (
+            <Circle center={[cases.lat, cases.long]} color="#e53e3e" radius={1000+(cases.cases*10)}>
+              <Popup>
+                <center>
+                  <p className="pop-up-header">{cases.city}</p>
+                  <p className="pop-up-body">{cases.cases}</p>
+                </center>
+              </Popup>
+            </Circle>
+          ))
         }
       </Map>
       

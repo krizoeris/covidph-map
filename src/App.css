@@ -23,3 +23,15 @@ body {
     border-color: #2a4365 !important;
     color: #ffffff !important;
 }
+
+.pop-up-header {
+    margin: 0 !important;
+    color: #2a4365 !important;
+    font-weight: 700 !important;
+}
+
+.pop-up-body {
+    margin: 0 !important;
+    font-weight: 700 !important;
+    font-size: large !important;
+}
