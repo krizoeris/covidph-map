@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import L from 'leaflet';
 import { Map, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet'
+import Card from './components/Card'
 import './App.css'
 
 let myIcon = L.icon({
@@ -45,6 +46,13 @@ function App() {
           </Marker>
         }
       </Map>
+      
+      <Card 
+        cases={state.cases.data} 
+        confirmed={state.cases.confirmed} 
+        recovered={state.cases.recovered} 
+        death={state.cases.death}
+      />
     </div>
   );
 }
