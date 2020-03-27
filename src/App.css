@@ -16,6 +16,12 @@ body {
     left: 5vh;
     margin-top: 5vh;
     margin-right: 5vh;
+    margin-bottom: 5vh;
+}
+
+.map-card-content {
+    position: 'relative';
+    height: 75%
 }
 
 .map-menu {
@@ -32,7 +38,7 @@ body {
     position: absolute;
     bottom: 20px;
     right: 8px;
-    font-size: smaller;
+    font-size: x-small;
 }
 
 .loading {
@@ -61,8 +67,8 @@ body {
 
 .close-card {
     position: absolute;
-    top: 20px;
-    right: 13px;
+    top: 12px;
+    right: 6px;
     padding: 3px 7px;
     font-size: x-small;
 }
@@ -85,4 +91,10 @@ background: #888;
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
 background: #555; 
+}
+
+@media (max-width: 640px) {
+    .leaflet-control-zoom {
+        display: none !important;
+    }
 }
