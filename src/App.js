@@ -38,7 +38,7 @@ function App() {
     let cities = []
     let citiesValue = []
 
-    let location = await fetch('http://localhost:3010/cases')
+    let location = await fetch('https://covidph-api.herokuapp.com/cases')
     let residences = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/ArcGIS/rest/services/PH_masterlist/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=FID%20ASC')
     let summary = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/slide_fig/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*')
     

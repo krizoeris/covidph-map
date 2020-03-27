@@ -7,22 +7,22 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
                 <i class="fas fa-times"></i>
             </button>
             <div className="mb-4 mr-6 text-center grid grid-cols-3 gap-2">
-                <div class="p-2 bg-orange-700 text-white rounded">
+                <div class="p-2 sm:p-0 bg-orange-700 text-white rounded">
                     <p className="font-bold">Infected</p>
                     <p className="font-bold">{confirmed}</p>
                 </div>
-                <div class="p-2 bg-red-700 text-white rounded">
+                <div class="p-2 sm:p-0 bg-red-700 text-white rounded">
                     <p className="font-bold">Deaths</p>
                     <p className="font-bold">{death}</p>
                 </div>
-                <div class="p-2 bg-green-700 text-white rounded">
+                <div class="p-2 sm:p-0 bg-green-700 text-white rounded">
                     <p className="font-bold">Recovered</p>
                     <p className="font-bold">{recovered}</p>
                 </div>
             </div>
             <div className="overflow-y-auto" style={{height: '85%'}}>
                 {cases.map(cases => (
-                    <div class="p-3 m-2 bg-blue-800 text-white rounded-lg">
+                    <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
                         <span className="">{cases.name}</span>
                         <span className="font-semibold text-gray-500 float-right">{cases.cases}</span>
                     </div>
