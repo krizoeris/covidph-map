@@ -2,8 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Card from './components/Card'
 import Credits from './components/Credits'
 import './App.css'
-import L from 'leaflet';
+import L, { layerGroup } from 'leaflet';
 import { Map, TileLayer, Circle, Popup, ZoomControl } from 'react-leaflet'
+
+const GetSortOrder = prop => {  
+  return function(a, b) {  
+      if (a[prop] > b[prop]) {  
+          return 1;  
+      } else if (a[prop] < b[prop]) {  
+          return -1;  
+      }  
+      return 0;  
+  }  
+}  
 
 function App() {
   const [state, setState] = useState({
@@ -11,7 +22,7 @@ function App() {
       confirmed: false,
       death: false,
       recovered: false,
-      data: []
+      data: [],
     },
     location: {
       lat: 14.5,
@@ -23,21 +34,55 @@ function App() {
     zoom: 10,
   })
 
-  const getCases = async () => {
-    let response = await fetch('https://covidph-api.herokuapp.com/cases')
-    response = await response.json()
+  const getData = async () => {
+    let cities = []
+    let citiesValue = []
+
+    let location = await fetch('http://localhost:3010/cases')
+    let residences = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/ArcGIS/rest/services/PH_masterlist/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=FID%20ASC')
+    let summary = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/slide_fig/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*')
+    
+    residences = await residences.json()
+    location = await location.json()
+    summary = await summary.json()
+    summary = summary.features[0].attributes
+
+    residences.features.map(response => {
+      let attr = response.attributes
+      let city = cities.indexOf(attr.residence)
+
+      if(citiesValue[city]) {
+        citiesValue[city] = {...citiesValue[city], cases: citiesValue[city].cases + 1}
+      } else {
+        let newCity = {name: attr.residence, cases: 1}
+
+        cities.push(attr.residence)
+        
+        location.data.map(loc => {
+          if(loc.city === attr.residence) {
+            newCity = {...newCity, lat: loc.lat, long: loc.long}
+          }
+          // else for no location
+        })
+        citiesValue.push(newCity)
+      }
+    })
+
+    citiesValue = citiesValue.sort(GetSortOrder("cases")).reverse()
 
     setState({
       ...state,
       cases: {
-        confirmed: response.confirmed,
-        death: response.death,
-        recovered: response.recovered,
-        data: response.data
+        confirmed: summary.confirmed,
+        death: summary.recovered,
+        recovered: summary.deaths,
+        data: citiesValue
       },
       hasLocation: true,
       loading: false
     })
+
+    console.log('load')
   }
 
   const handleCardClose = () => {
@@ -55,7 +100,10 @@ function App() {
   }
 
   useEffect(() => {
-    getCases()
+    if(state.cases.data.length === 0) {
+      getData()
+    }
+    setInterval(getData(), 3600000);
   }, [])
 
   const cases = state.cases.data
@@ -79,7 +127,7 @@ function App() {
               <Circle center={[cases.lat, cases.long]} color="#e53e3e" radius={1000+(cases.cases*10)}>
                 <Popup>
                   <center>
-                    <p className="pop-up-header">{cases.city}</p>
+                    <p className="pop-up-header">{cases.name}</p>
                     <p className="pop-up-body">{cases.cases}</p>
                   </center>
                 </Popup>

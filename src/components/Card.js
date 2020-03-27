@@ -23,7 +23,7 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
             <div className="overflow-y-auto" style={{height: '85%'}}>
                 {cases.map(cases => (
                     <div class="p-3 m-2 bg-blue-800 text-white rounded-lg">
-                        <span className="">{cases.city}</span>
+                        <span className="">{cases.name}</span>
                         <span className="font-semibold text-gray-500 float-right">{cases.cases}</span>
                     </div>
                 ))}
