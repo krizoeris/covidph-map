@@ -12,7 +12,7 @@ body {
     z-index: 999;
     position: absolute;
     height: 90vh;
-    min-width: 340px;
+    min-width: 300px;
     top: 0;
     left: 5vh;
     margin-top: 5vh;
@@ -23,6 +23,11 @@ body {
 .map-card-content {
     position: 'relative';
     height: 75%
+}
+
+.map-card-analytics {
+    position: 'relative';
+    height: 80%
 }
 
 .map-menu {
@@ -44,8 +49,8 @@ body {
 
 .loading {
     position: absolute;
-    top: 42%;
-    left: 45%;
+    top: 45vh;
+    left: 45%
 }
 
 .leaflet-control-zoom-in, .leaflet-control-zoom-out {
@@ -103,8 +108,15 @@ background: #555;
         height: 80%;
     }
 
+    .map-card-analytics {
+        position: 'relative';
+        height: 90%
+    }
+
     .map-card {
         height: calc(90vh - 80px);
+        width: 320px;
+        left: 4vh;
     }
 
     .card-bottom {
@@ -119,13 +131,24 @@ background: #555;
     }
 }
 
+@media (max-width: 550px) {
+    .loading {
+        left: 33%
+    }
+}
+
 @media (max-width: 360px) {
     .map-card {
         min-width: 280px;
+        width: 290px;
         top: 0;
         left: 3.5vh;
         margin-top: 5vh;
         margin-right: 3vh;
         margin-bottom: 5vh;
+    }
+
+    .loading {
+        left: 28%
     }
 }
