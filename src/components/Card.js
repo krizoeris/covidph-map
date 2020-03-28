@@ -1,6 +1,22 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
+    const [state, setState] = useState({
+        cases: []
+    })
+
+    const handleSearch = val => {
+        let search = cases.filter(cases => (
+            cases.name.toLowerCase().includes(val.target.value)
+        ))
+        
+        setState({...state, cases: search})
+    }
+
+    if(state.cases.length === 0) {
+        setState({...state, cases: cases})
+    }
+
     return (
         <div class="w-sm rounded-lg bg-blue-900 shadow-lg map-card p-3">
             <button className="close-card rounded-full bg-blue-800 hover:bg-blue-700 font-bold text-gray-300 shadow-large" onClick={handleCardClose}>
@@ -34,10 +50,10 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
             </div>
 
             <div className="mb-3">
-                <input class="bg-gray-600 rounded-full w-full py-2 px-4 text-white leading-tight focus:outline-none fontAwesome" type="text" placeholder="Search"></input>
+                <input class="bg-gray-600 rounded-full w-full py-2 px-4 text-white leading-tight focus:outline-none fontAwesome" type="text" placeholder="Search" onChange={handleSearch}></input>
             </div>
             <div className="overflow-y-auto map-card-content">
-                {cases.map(cases => (
+                {state.cases.map(cases => (
                     <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
                         <span className="">{cases.name}</span>
                         <span className="font-semibold text-gray-500 float-right">{cases.cases}</span>

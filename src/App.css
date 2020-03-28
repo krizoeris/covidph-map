@@ -12,6 +12,7 @@ body {
     z-index: 999;
     position: absolute;
     height: 90vh;
+    min-width: 340px;
     top: 0;
     left: 5vh;
     margin-top: 5vh;
@@ -96,5 +97,24 @@ background: #555;
 @media (max-width: 640px) {
     .leaflet-control-zoom {
         display: none !important;
+    }
+
+    .map-card-content {
+        height: 80%;
+    }
+
+    .map-card {
+        height: calc(90vh - 80px)
+    }
+
+    .card-bottom {
+        z-index: 999;
+        position: absolute;
+        bottom: 0;
+        height: 80px;
+    }
+
+    .map{
+        height: 90%;
     }
 }

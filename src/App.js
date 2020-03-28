@@ -3,7 +3,7 @@ import Card from './components/Card'
 import Credits from './components/Credits'
 import './App.css'
 import L, { layerGroup } from 'leaflet';
-import { Map, TileLayer, Circle, Popup, ZoomControl } from 'react-leaflet'
+import { Map, TileLayer, Circle, Popup, ZoomControl, AttributionControl } from 'react-leaflet'
 
 const GetSortOrder = prop => {  
   return function(a, b) {  
@@ -29,9 +29,9 @@ function App() {
       lng: 120.8,
     },
     hasLocation: false,
-    cardShow: true,
+    cardShow: (window.screen.width > 640) ? true : false,
     loading: true,
-    zoom: 10,
+    zoom: (window.screen.width > 640) ? 10 : 8,
   })
 
   const getData = async () => {
@@ -82,7 +82,7 @@ function App() {
       loading: false
     })
 
-    console.log('load')
+    console.log(citiesValue)
   }
 
   const handleCardClose = () => {
@@ -108,6 +108,8 @@ function App() {
 
   const cases = state.cases.data
   const position = [state.location.lat, state.location.lng]
+
+  console.log(window.screen.width)
   
   if(state.loading) {
     return(
@@ -116,11 +118,12 @@ function App() {
   } else {
     return (
       <div className="App">
-        <Map className="map" center={position} zoom={state.zoom} zoomControl={false}>
+        <Map className="map" center={position} zoom={state.zoom} zoomControl={false}  attributionControl={false}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          <AttributionControl position='topright' />
           <ZoomControl position="topright"/>
           {state.hasLocation &&
             cases.map(cases => (
@@ -150,6 +153,20 @@ function App() {
           </button>
         }
         <Credits />
+        <div className="w-full bg-blue-900 text-center grid grid-cols-3 card-bottom">
+            <div class="p-1 m-2 bg-orange-700 text-white rounded block lg:hidden md:hidden">
+                <p className="font-bold">Infected</p>
+                <p className="font-bold">{state.cases.confirmed}</p>
+            </div>
+            <div class="p-1 m-2 bg-red-700 text-white rounded block lg:hidden md:hidden">
+                <p className="font-bold">Deaths</p>
+                <p className="font-bold">{state.cases.death}</p>
+            </div>
+            <div class="p-1 m-2 bg-green-700 text-white rounded block lg:hidden md:hidden">
+                <p className="font-bold">Recovered</p>
+                <p className="font-bold">{state.cases.recovered}</p>
+            </div>
+        </div>
       </div>
     );
   }
