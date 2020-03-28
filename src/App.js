@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Card from './components/Card'
 import Credits from './components/Credits'
+import BurgerButton from './components/BurgerButton'
+import CardBottomStatus from './components/CardBottomStatus'
+import CaseMarker from './components/CaseMarker'
 import './App.css'
-import L, { layerGroup } from 'leaflet';
-import { Map, TileLayer, Circle, Popup, ZoomControl, AttributionControl } from 'react-leaflet'
+//import L, { layerGroup } from 'leaflet';
+import { Map, TileLayer, ZoomControl, AttributionControl } from 'react-leaflet'
 
 const GetSortOrder = prop => {  
   return function(a, b) {  
@@ -29,9 +32,10 @@ function App() {
       lng: 120.8,
     },
     hasLocation: false,
-    cardShow: (window.screen.width > 640) ? true : false,
     loading: true,
-    zoom: (window.screen.width > 640) ? 10 : 8,
+    cardShow: (window.screen.width > 640) ? true : false, // for responsive layout
+    zoom: (window.screen.width > 640) ? 10 : 8, // for responsive layout
+    selectedCase: false
   })
 
   const getData = async () => {
@@ -85,6 +89,19 @@ function App() {
     console.log(citiesValue)
   }
 
+  const handleOnClickLocation = (lat, long, index) => {
+    setState({
+      ...state,
+      location: {
+        lat: lat,
+        lng: (window.screen.width > 640) ? long-0.05 : long,
+      },
+      zoom: 10,
+      cardShow: (window.screen.width > 640) ? true : false,
+      selectedCase: index
+    })
+  }
+
   const handleCardClose = () => {
     setState({
       ...state,
@@ -103,7 +120,6 @@ function App() {
     if(state.cases.data.length === 0) {
       getData()
     }
-    setInterval(getData(), 3600000);
   }, [])
 
   const cases = state.cases.data
@@ -126,15 +142,14 @@ function App() {
           <AttributionControl position='topright' />
           <ZoomControl position="topright"/>
           {state.hasLocation &&
-            cases.map(cases => (
-              <Circle center={[cases.lat, cases.long]} color="#e53e3e" radius={1000+(cases.cases*10)}>
-                <Popup>
-                  <center>
-                    <p className="pop-up-header">{cases.name}</p>
-                    <p className="pop-up-body">{cases.cases}</p>
-                  </center>
-                </Popup>
-              </Circle>
+            cases.map((cases, index) => (
+              <CaseMarker 
+                lat={cases.lat}
+                long={cases.long}
+                cases={cases.cases}
+                name={cases.name}
+                openPopup={state.selectedCase === index}
+              />
             ))
           }
         </Map>
@@ -145,28 +160,18 @@ function App() {
             recovered={state.cases.recovered} 
             death={state.cases.death}
             handleCardClose={handleCardClose}
+            handleOnClickLocation={handleOnClickLocation}
           />
         }
         {!state.cardShow &&
-          <button className="map-menu rounded-full bg-blue-800 hover:bg-blue-700 font-bold text-gray-300 shadow" onClick={handleCardOpen}>
-            <i class="fas fa-bars"></i>
-          </button>
+          <BurgerButton handleCardOpen={handleCardOpen} />
         }
         <Credits />
-        <div className="w-full bg-blue-900 text-center grid grid-cols-3 card-bottom">
-            <div class="p-1 m-2 bg-orange-700 text-white rounded block lg:hidden md:hidden">
-                <p className="font-bold">Infected</p>
-                <p className="font-bold">{state.cases.confirmed}</p>
-            </div>
-            <div class="p-1 m-2 bg-red-700 text-white rounded block lg:hidden md:hidden">
-                <p className="font-bold">Deaths</p>
-                <p className="font-bold">{state.cases.death}</p>
-            </div>
-            <div class="p-1 m-2 bg-green-700 text-white rounded block lg:hidden md:hidden">
-                <p className="font-bold">Recovered</p>
-                <p className="font-bold">{state.cases.recovered}</p>
-            </div>
-        </div>
+        <CardBottomStatus
+          confirmed={state.cases.confirmed} 
+          recovered={state.cases.recovered} 
+          death={state.cases.death}
+        />
       </div>
     );
   }

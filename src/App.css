@@ -94,7 +94,7 @@ background: #888;
 background: #555; 
 }
 
-@media (max-width: 640px) {
+@media (max-width: 769px) {
     .leaflet-control-zoom {
         display: none !important;
     }
@@ -104,7 +104,7 @@ background: #555;
     }
 
     .map-card {
-        height: calc(90vh - 80px)
+        height: calc(90vh - 80px);
     }
 
     .card-bottom {
@@ -116,5 +116,16 @@ background: #555;
 
     .map{
         height: 90%;
+    }
+}
+
+@media (max-width: 360px) {
+    .map-card {
+        min-width: 280px;
+        top: 0;
+        left: 3.5vh;
+        margin-top: 5vh;
+        margin-right: 3vh;
+        margin-bottom: 5vh;
     }
 }

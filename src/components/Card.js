@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
+const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClickLocation}) => {
     const [state, setState] = useState({
         cases: []
     })
@@ -53,8 +53,8 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose}) => {
                 <input class="bg-gray-600 rounded-full w-full py-2 px-4 text-white leading-tight focus:outline-none fontAwesome" type="text" placeholder="Search" onChange={handleSearch}></input>
             </div>
             <div className="overflow-y-auto map-card-content">
-                {state.cases.map(cases => (
-                    <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
+                {state.cases.map((cases, index) => (
+                    <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg" onClick={() => handleOnClickLocation(cases.lat, cases.long, index)}>
                         <span className="">{cases.name}</span>
                         <span className="font-semibold text-gray-500 float-right">{cases.cases}</span>
                     </div>
