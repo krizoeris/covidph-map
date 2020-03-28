@@ -167,13 +167,15 @@ const Analytics = () => {
         response = await response.json()
 
         response.features.map(cases => {
-            console.log(cases.attribute.date)
+            console.log(cases.attributes.date)
         })
     }
     const getAgeCases = async () => {}
 
-    useEffect(async () => {
-        await Promise.all([getCityCases(), getGenderCases(), getTotalCases()])
+    useEffect(() => {
+        getCityCases()
+        getGenderCases()
+        getTotalCases()
     }, [])
 
     // console.log(stateTotalCases.data)
