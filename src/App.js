@@ -187,9 +187,9 @@ function App() {
           }
           <Credits />
           <CardBottomStatus
-            confirmed={stateSummary.confirmed} 
-            recovered={stateSummary.recovered} 
-            death={stateSummary.deaths}
+            confirmed={stateSummary.confirmed.toLocaleString()} 
+            recovered={stateSummary.recovered.toLocaleString()} 
+            death={stateSummary.deaths.toLocaleString()}
           />
         </div>
       </AppContext.Provider>
