@@ -164,7 +164,7 @@ function App() {
                 <CaseMarker 
                   lat={cases.lat}
                   long={cases.long}
-                  cases={cases.cases}
+                  cases={cases.cases.toLocaleString()}
                   name={cases.name}
                   openPopup={state.selectedCase === index}
                 />

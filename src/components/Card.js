@@ -10,7 +10,7 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
 
     const handleSearch = val => {
         let search = cases.filter(cases => (
-            cases.name.toLowerCase().includes(val.target.value)
+            cases.name.toLowerCase().includes(val.target.value) || cases.name.toUpperCase().includes(val.target.value) || cases.name.includes(val.target.value)
         ))
         
         setState({...state, cases: search})
@@ -39,15 +39,15 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
             <div className="mr-6 text-center grid grid-cols-3 gap-2">
                 <div class="p-1 bg-orange-700 text-white rounded hidden lg:block md:block">
                     <p className="font-bold">Infected</p>
-                    <p className="font-bold">{confirmed}</p>
+                    <p className="font-bold">{confirmed.toLocaleString()}</p>
                 </div>
                 <div class="p-1 bg-red-700 text-white rounded hidden lg:block md:block">
                     <p className="font-bold">Deaths</p>
-                    <p className="font-bold">{death}</p>
+                    <p className="font-bold">{death.toLocaleString()}</p>
                 </div>
                 <div class="p-1 bg-green-700 text-white rounded hidden lg:block md:block">
                     <p className="font-bold">Recovered</p>
-                    <p className="font-bold">{recovered}</p>
+                    <p className="font-bold">{recovered.toLocaleString()}</p>
                 </div>
             </div>
 
@@ -73,7 +73,7 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
                     {state.cases.map((cases) => (
                         <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg cursor-pointer" onClick={() => handleOnClickLocation(cases.lat, cases.long, state.cities.indexOf(cases.name))}>
                             <span className="">{cases.name}</span>
-                            <span className="font-semibold text-gray-500 float-right">{cases.cases}</span>
+                            <span className="font-semibold text-gray-500 float-right">{cases.cases.toLocaleString()}</span>
                         </div>
                     ))}
                 </div>

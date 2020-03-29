@@ -114,7 +114,7 @@ background: #555;
     }
 
     .map-card {
-        height: calc(90vh - 80px);
+        height: calc(85vh - 80px);
         width: 320px;
         left: 4vh;
     }
@@ -124,6 +124,13 @@ background: #555;
         position: absolute;
         bottom: 0;
         height: 80px;
+        padding-bottom: 30px;
+    }
+
+    .credits {
+        z-index: 1100;
+        bottom: 81px;
+        font-size: xx-small;
     }
 
     .map{
@@ -134,6 +141,12 @@ background: #555;
 @media (max-width: 550px) {
     .loading {
         left: 33%
+    }
+
+    .map-card {
+        height: calc(85vh - 80px);
+        width: 85%;
+        left: 4vh;
     }
 }
 
