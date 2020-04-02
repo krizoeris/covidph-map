@@ -42,7 +42,7 @@ function App() {
     let citiesValue = []
     let genderValue = {female: 0, male: 0}
 
-    let location = await fetch('https://covidph-api.herokuapp.com/cases')
+    let location = await fetch(process.env.REACT_APP_CASES_URL+'/cases')
     let res = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/ArcGIS/rest/services/PH_masterlist/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=FID%20ASC')
     
     location = await location.json()
@@ -66,9 +66,9 @@ function App() {
           } 
         })
 
-        //if new location
+        //search new loc
         if(!newCity.lat) {
-          newCity = {...newCity, lat: 10, long: 10}
+          newCity = {...newCity, search: true, lat: 10, long: 10}
         }
 
         citiesValue.push(newCity)
@@ -79,9 +79,33 @@ function App() {
       genderValue.male = (attr.kasarian === 'Male') ? genderValue.male+1 : genderValue.male
     })
 
-    citiesValue = citiesValue.sort(GetSortOrder("cases")).reverse()
+    citiesValue.map(async (city, index) => {
+      if(city.search === true) {
+        //console.log(city.name)
+        let location = await fetch(`${process.env.REACT_APP_GOOGLE_API}?address=${city.name}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
+        location = await location.json()
+        
+        if(location.results.length > 0) {
+          citiesValue[index] = {
+            ...citiesValue[index],
+            lat: (location.results[0].geometry.location.lat) ? location.results[0].geometry.location.lat : 10,
+            long: (location.results[0].geometry.location.lng) ? location.results[0].geometry.location.lng : 10
+          }
+        } else {
+          citiesValue[index] = {
+            ...citiesValue[index],
+            lat: 10,
+            long: 10
+          }
+        }
+      }
+    })
 
-    setStateCases(citiesValue)
+    let citiesSort = citiesValue.sort(GetSortOrder("cases")).reverse()
+
+    console.log('city', citiesValue)
+
+    setStateCases(citiesSort)
 
     setGlobalState({
       cities: citiesValue,
