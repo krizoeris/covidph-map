@@ -43,7 +43,7 @@ const Analytics = () => {
         globalState.cities.map(city => {
             datasets.data.push(city.cases)
             datasets.backgroundColor.push('rgb('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255))
-            labels.push(city.name)
+            labels.push(city.city)
         })
         
         setStateCityCases({
@@ -55,9 +55,12 @@ const Analytics = () => {
         })
     }
 
-    const getGenderCases = () => {
+    const getGenderCases = async () => {
+        let response = await fetch(`${process.env.REACT_APP_CASES_URL}/gender`)
+        response = await response.json()
+
         let datasets = {
-            data: [globalState.gender.female, globalState.gender.male],
+            data: [response.female, response.male],
             backgroundColor: ['#36A2EB', '#FFCE56'],
             borderWidth: 0
         }
@@ -114,17 +117,13 @@ const Analytics = () => {
             }
         }
 
-        let response = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/age_group/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&groupByFieldsForStatistics=age_categ%2Csex&outStatistics=%5B%7B%22statisticType%22%3A%22count%22%2C%22onStatisticField%22%3A%22FID%22%2C%22outStatisticFieldName%22%3A%22value%22%7D%5D&cacheHint=true')
+        let response = await fetch(`${process.env.REACT_APP_CASES_URL}/age`)
         response = await response.json()
 
-        response.features.map(age => {
-            if(labels.includes(age.attributes.age_categ)) {
-                datasets.data[labels.indexOf(age.attributes.age_categ)] = datasets.data[labels.indexOf(age.attributes.age_categ)]+age.attributes.value
-            } else {
-                labels.push(age.attributes.age_categ)
-                datasets.data.push(age.attributes.value)
-                datasets.backgroundColor.push('rgb('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255))
-            }
+        response.map(age => {
+            labels.push(age.ages)
+            datasets.data.push(age.cases)
+            datasets.backgroundColor.push('rgb('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255))
         })
         
 

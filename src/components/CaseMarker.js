@@ -9,7 +9,7 @@ const CaseMarker = ({lat, long, name, cases, openPopup}) => {
     }, [openPopup]);
 
     return (
-        <Circle ref={markerRef} center={[lat, long]} color="#e53e3e" radius={1000+(cases*10)}>
+        <Circle ref={markerRef} center={[lat, long]} color="#e53e3e" radius={500+(cases*5)}>
             <Popup>
                 <center>
                 <p className="pop-up-header">{name}</p>

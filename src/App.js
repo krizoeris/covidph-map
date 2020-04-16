@@ -38,78 +38,19 @@ function App() {
   const [globalState, setGlobalState] = useState([])
 
   const getCases = async () => {
-    let cities = []
-    let citiesValue = []
-    let genderValue = {female: 0, male: 0}
-
-    let location = await fetch(process.env.REACT_APP_CASES_URL+'/cases')
-    let res = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/ArcGIS/rest/services/PH_masterlist/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=FID%20ASC')
-    
-    location = await location.json()
+    let res = await fetch(`${process.env.REACT_APP_CASES_URL}/cases`)
     res = await res.json()
 
-    res.features.map(response => {
-      let attr = response.attributes
-      let city = cities.indexOf(attr.residence)
+    setStateCases(res.data)
 
-      //City
-      if(citiesValue[city]) {
-        citiesValue[city] = {...citiesValue[city], cases: citiesValue[city].cases + 1}
-      } else {
-        let newCity = {name: attr.residence, cases: 1}
-
-        cities.push(attr.residence)
-      
-        location.data.map(loc => {
-          if(loc.city === attr.residence) {
-            newCity = {...newCity, lat: loc.lat, long: loc.long}
-          } 
-        })
-
-        //search new loc
-        if(!newCity.lat) {
-          newCity = {...newCity, search: true, lat: 10, long: 10}
-        }
-
-        citiesValue.push(newCity)
-      }
-
-      //Gender
-      genderValue.female = (attr.kasarian === 'Female') ? genderValue.female+1 : genderValue.female
-      genderValue.male = (attr.kasarian === 'Male') ? genderValue.male+1 : genderValue.male
+    setStateSummary({
+      confirmed: res.confirmed,
+      recovered: res.recovered,
+      deaths: res.death
     })
-
-    citiesValue.map(async (city, index) => {
-      if(city.search === true) {
-        //console.log(city.name)
-        let location = await fetch(`${process.env.REACT_APP_GOOGLE_API}?address=${city.name}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
-        location = await location.json()
-        
-        if(location.results.length > 0) {
-          citiesValue[index] = {
-            ...citiesValue[index],
-            lat: (location.results[0].geometry.location.lat) ? location.results[0].geometry.location.lat : 10,
-            long: (location.results[0].geometry.location.lng) ? location.results[0].geometry.location.lng : 10
-          }
-        } else {
-          citiesValue[index] = {
-            ...citiesValue[index],
-            lat: 10,
-            long: 10
-          }
-        }
-      }
-    })
-
-    let citiesSort = citiesValue.sort(GetSortOrder("cases")).reverse()
-
-    console.log('city', citiesValue)
-
-    setStateCases(citiesSort)
 
     setGlobalState({
-      cities: citiesValue,
-      gender: genderValue
+      cities: res.data,
     })
 
     setState({
@@ -119,13 +60,6 @@ function App() {
     })
   }
   // getCases() end
-
-  const getSummaryCases = async () => {
-    let res = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/slide_fig/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*')
-    res = await res.json()
-
-    setStateSummary(res.features[0].attributes)
-  }
 
   const handleOnClickLocation = (lat, long, index) => {
     setState({
@@ -155,7 +89,7 @@ function App() {
   }
 
   useEffect(async () => {
-    await Promise.all([getCases(), getSummaryCases()])
+    getCases()
   }, [])
 
   const cases = stateCases
@@ -188,8 +122,8 @@ function App() {
                 <CaseMarker 
                   lat={cases.lat}
                   long={cases.long}
-                  cases={cases.cases.toLocaleString()}
-                  name={cases.name}
+                  cases={parseInt(cases.cases).toLocaleString()}
+                  name={cases.city}
                   openPopup={state.selectedCase === index}
                 />
               ))
@@ -199,9 +133,9 @@ function App() {
           {state.cardShow &&
             <Card 
               cases={cases} 
-              confirmed={stateSummary.confirmed} 
-              recovered={stateSummary.recovered} 
-              death={stateSummary.deaths}
+              confirmed={parseInt(stateSummary.confirmed).toLocaleString()} 
+              recovered={parseInt(stateSummary.recovered).toLocaleString()} 
+              death={parseInt(stateSummary.deaths).toLocaleString()}
               handleCardClose={handleCardClose}
               handleOnClickLocation={handleOnClickLocation}
             />
@@ -211,9 +145,9 @@ function App() {
           }
           <Credits />
           <CardBottomStatus
-            confirmed={stateSummary.confirmed.toLocaleString()} 
-            recovered={stateSummary.recovered.toLocaleString()} 
-            death={stateSummary.deaths.toLocaleString()}
+            confirmed={parseInt(stateSummary.confirmed).toLocaleString()} 
+            recovered={parseInt(stateSummary.recovered).toLocaleString()} 
+            death={parseInt(stateSummary.deaths).toLocaleString()}
           />
         </div>
       </AppContext.Provider>

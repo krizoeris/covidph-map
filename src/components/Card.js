@@ -10,7 +10,7 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
 
     const handleSearch = val => {
         let search = cases.filter(cases => (
-            cases.name.toLowerCase().includes(val.target.value) || cases.name.toUpperCase().includes(val.target.value) || cases.name.includes(val.target.value)
+            cases.city.toLowerCase().includes(val.target.value) || cases.city.toUpperCase().includes(val.target.value) || cases.city.includes(val.target.value)
         ))
         
         setState({...state, cases: search})
@@ -25,7 +25,7 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
        setState({
             ...state,
             cases: cases,
-            cities: cases.map(cases => cases.name)
+            cities: cases.map(cases => cases.city)
         })
     }, [cases])
 
@@ -71,8 +71,8 @@ const Card = ({cases, confirmed, recovered, death, handleCardClose, handleOnClic
             {state.isButton === 'cities' &&
                 <div className="overflow-y-auto map-card-content">
                     {state.cases.map((cases) => (
-                        <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg cursor-pointer" onClick={() => handleOnClickLocation(cases.lat, cases.long, state.cities.indexOf(cases.name))}>
-                            <span className="">{cases.name}</span>
+                        <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg cursor-pointer" onClick={() => handleOnClickLocation(cases.lat, cases.long, state.cities.indexOf(cases.city))}>
+                            <span className="">{cases.city}</span>
                             <span className="font-semibold text-gray-500 float-right">{cases.cases.toLocaleString()}</span>
                         </div>
                     ))}
