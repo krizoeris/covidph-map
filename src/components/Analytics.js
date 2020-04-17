@@ -2,27 +2,86 @@ import React, { useContext, useState, useEffect } from 'react'
 import AppContext from '../AppContext'
 import { Pie, Line, Doughnut, HorizontalBar } from 'react-chartjs-2';
 
-const barData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'My First dataset',
-            backgroundColor: 'rgba(255,99,132,0.2)',
-            borderColor: 'rgba(255,99,132,1)',
-            borderWidth: 1,
-            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-            hoverBorderColor: 'rgba(255,99,132,1)',
-            data: [65, 59, 80, 81, 56, 55, 40]
-        }
-    ]
-};
-
 const Analytics = () => {
     const [globalState, setGlobalState] = useContext(AppContext)
-    // const [stateTotalCases, setStateTotalCases] = useState([])
+    const [stateDailyCases, setStateDailyCases] = useState([])
     const [stateCityCases, setStateCityCases] = useState([])
     const [stateAgeCases, setStateAgeCases] = useState([])
     const [stateGenderCases, setStateGenderCases] = useState([])
+
+    const getDailyCases = async () => {
+        let datasets = {
+            data: [],
+            borderColor: 'rgb(118, 174, 226)',
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            fill: true,
+            showLine: true
+        }
+        
+        let options = {
+            legend: {
+                display: false,
+              },
+              tooltips: {
+                enabled: false,
+              },
+              scales: {
+                yAxes: [
+                  {
+                    display: true,
+                    type: 'linear',
+                    gridLines: {
+                      display: true,
+                    },
+                    ticks: {
+                        fontColor: "#fff"
+                    }
+                  },
+                ],
+                xAxes: [
+                  {
+                    display: true,
+                    gridLines: {
+                      display: false,
+                    },
+                    type: 'time',
+                    time: {
+                        displayFormats: {
+                          'month': 'Mon-DD'
+                        }
+                    },
+                    ticks: {
+                        fontColor: "#fff"
+                    }
+                  },
+                ],
+              },
+              responsive: true,
+              maintainAspectRatio: false,
+        }
+
+        let response = await fetch(`${process.env.REACT_APP_CASES_URL}/daily`)
+        response = await response.json()
+
+        let labels = []
+        let total = 0
+
+        response.map(daily => {
+            total = total + parseInt(daily.cases)
+            labels.push(daily.date)
+            datasets.data.push(total)
+        })
+        
+
+        setStateDailyCases({
+            data:{
+                datasets: [datasets],
+                labels: labels,
+            },
+            options: options
+        })
+    }
     
     const getCityCases = () => {
         let datasets = {
@@ -137,6 +196,7 @@ const Analytics = () => {
     }
 
     useEffect(() => {
+        getDailyCases()
         getCityCases()
         getGenderCases()
         getAgeCases()
@@ -147,10 +207,10 @@ const Analytics = () => {
 
     return (
         <div className="overflow-y-auto map-card-analytics">
-            {/* <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
+            <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
                 <p className="font-semibold text-lg">Total Cases</p>
-                <Line data={lineData} options={options}/>
-            </div> */}
+                <Line data={stateDailyCases.data} options={stateDailyCases.options}/>
+            </div>
             <div class="p-3 mr-2 mt-0 mb-4 bg-blue-800 text-white rounded-lg">
                 <p className="font-semibold text-lg">Total Cases by City</p>
                 <Pie data={stateCityCases.data} options={stateCityCases.options}/>
