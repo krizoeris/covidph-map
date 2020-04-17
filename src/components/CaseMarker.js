@@ -13,7 +13,7 @@ const CaseMarker = ({lat, long, name, cases, openPopup}) => {
             <Popup>
                 <center>
                 <p className="pop-up-header">{name}</p>
-                <p className="pop-up-body">{cases}</p>
+                <p className="pop-up-body">{cases.toLocaleString()}</p>
                 </center>
             </Popup>
         </Circle>

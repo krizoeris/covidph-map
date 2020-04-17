@@ -9,23 +9,13 @@ import './App.css'
 //import L, { layerGroup } from 'leaflet';
 import { Map, TileLayer, ZoomControl, AttributionControl } from 'react-leaflet'
 
-const GetSortOrder = prop => {  
-  return function(a, b) {  
-      if (a[prop] > b[prop]) {  
-          return 1;  
-      } else if (a[prop] < b[prop]) {  
-          return -1;  
-      }  
-      return 0;  
-  }  
-}  
-
 function App() {
   const [state, setState] = useState({
     location: {
       lat: 14.5,
       lng: 120.8,
     },
+    cases: [],
     loading: true,
     selectedCase: false,
     hasLocation: false,
@@ -41,22 +31,20 @@ function App() {
     let res = await fetch(`${process.env.REACT_APP_CASES_URL}/cases`)
     res = await res.json()
 
-    setStateCases(res.data)
-
-    setStateSummary({
-      confirmed: res.confirmed,
-      recovered: res.recovered,
-      deaths: res.death
-    })
-
     setGlobalState({
       cities: res.data,
     })
 
     setState({
-        ...state,
-        hasLocation: true,
-        loading: false
+      ...state,
+      hasLocation: true,
+      loading: false,
+      cases: {
+        confirmed: res.confirmed,
+        recovered: res.recovered,
+        deaths: res.death,
+        data: res.data
+      }
     })
   }
   // getCases() end
@@ -88,12 +76,14 @@ function App() {
     })
   }
 
-  useEffect(async () => {
+  if(state.cases.length === 0) {
     getCases()
-  }, [])
+  } 
 
-  const cases = stateCases
+  const cases = state.cases.data
   const position = [state.location.lat, state.location.lng]
+
+  //console.log(cases)
   
   if(state.loading) {
     return(
@@ -122,7 +112,7 @@ function App() {
                 <CaseMarker 
                   lat={cases.lat}
                   long={cases.long}
-                  cases={parseInt(cases.cases).toLocaleString()}
+                  cases={cases.cases}
                   name={cases.city}
                   openPopup={state.selectedCase === index}
                 />
@@ -133,9 +123,9 @@ function App() {
           {state.cardShow &&
             <Card 
               cases={cases} 
-              confirmed={parseInt(stateSummary.confirmed).toLocaleString()} 
-              recovered={parseInt(stateSummary.recovered).toLocaleString()} 
-              death={parseInt(stateSummary.deaths).toLocaleString()}
+              confirmed={parseInt(state.cases.confirmed).toLocaleString()} 
+              recovered={parseInt(state.cases.recovered).toLocaleString()} 
+              death={parseInt(state.cases.deaths).toLocaleString()}
               handleCardClose={handleCardClose}
               handleOnClickLocation={handleOnClickLocation}
             />
@@ -145,9 +135,9 @@ function App() {
           }
           <Credits />
           <CardBottomStatus
-            confirmed={parseInt(stateSummary.confirmed).toLocaleString()} 
-            recovered={parseInt(stateSummary.recovered).toLocaleString()} 
-            death={parseInt(stateSummary.deaths).toLocaleString()}
+            confirmed={parseInt(state.cases.confirmed).toLocaleString()} 
+            recovered={parseInt(state.cases.recovered).toLocaleString()} 
+            death={parseInt(state.cases.deaths).toLocaleString()}
           />
         </div>
       </AppContext.Provider>
