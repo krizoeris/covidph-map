@@ -4,6 +4,8 @@
 
 🌎 Map tracker of COVID19 confirmed cases in the Philippines
 
+![](map.gif)
+
 ## Quick Start
 
 ```bash
